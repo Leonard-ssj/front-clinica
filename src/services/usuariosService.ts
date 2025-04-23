@@ -51,3 +51,13 @@ export const crearUsuario = async (usuario: Omit<Usuario, "idUsuario">) => {
     }
 };
 
+// Obtener la lista de médicos (usuarios con rolId = 2)
+export const obtenerMedicos = async (): Promise<Usuario[]> => {
+    try {
+        const response = await api.get("/usuarios/medicos");
+        return response.data;
+    } catch (error) {
+        console.error("Error obteniendo médicos", error);
+        return [];
+    }
+};

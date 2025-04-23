@@ -68,7 +68,9 @@ export default function NuevoHistoriaClinicaModal({
                 },
                 notasMedicas,
                 fechaUltimaActualizacion: new Date().toISOString().split("T")[0],
+                tratamientos: [] // ✅ Se añade esta propiedad vacía para cumplir con la estructura esperada
             });
+            
 
             setMensajeExito("Historia clínica creada exitosamente.");
             setError(null);

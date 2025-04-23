@@ -10,6 +10,7 @@ export const obtenerHistoriasClinicas = async (): Promise<HistoriaClinica[]> => 
             paciente: historia.paciente,
             notasMedicas: historia.notasMedicas,
             fechaUltimaActualizacion: historia.fechaUltimaActualizacion,
+            tratamientos: historia.tratamientos || [] // ✅ Nos aseguramos de que `tratamientos` siempre sea un array
         }));
     } catch (error) {
         console.error("Error obteniendo historias clínicas", error);
@@ -27,4 +28,9 @@ export const crearHistoriaClinica = async (historiaClinica: Omit<HistoriaClinica
         console.error("Error creando historia clínica", error);
         throw error;
     }
+};
+
+export const obtenerHistoriaClinicaPorId = async (idHistoria: number): Promise<HistoriaClinica> => {
+    const response = await api.get(`/historias/${idHistoria}`);
+    return response.data;
 };

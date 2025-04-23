@@ -1,3 +1,5 @@
+import { Tratamiento } from "./tratamiento";
+
 export interface HistoriaClinica {
     idHistoria: number;
     paciente: {
@@ -10,4 +12,5 @@ export interface HistoriaClinica {
     };
     notasMedicas: string;
     fechaUltimaActualizacion: string;
+    tratamientos: Tratamiento[]; // ✅ Agregamos esta línea
 }

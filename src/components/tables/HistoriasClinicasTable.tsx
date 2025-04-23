@@ -8,6 +8,8 @@ interface HistoriasClinicasTableProps {
     currentPage: number;
     rowsPerPage: number;
     onPageChange: (page: number) => void;
+    onAgregarTratamiento: (idHistoria: number) => void;
+    onEditarTratamiento: (idHistoria: number, idTratamiento: number) => void;
 }
 
 export default function HistoriasClinicasTable({
@@ -17,10 +19,12 @@ export default function HistoriasClinicasTable({
     dateFilter,
     currentPage,
     rowsPerPage,
-    onPageChange
+    onPageChange,
+    onAgregarTratamiento,
+    onEditarTratamiento
 }: HistoriasClinicasTableProps) {
-    
-    // Aplicar filtros
+
+    // Filtrar historias clínicas según los filtros aplicados
     const historiasFiltradas = historias.filter((historia) => {
         return (
             (idFilter === "" || historia.idHistoria?.toString().includes(idFilter)) &&
@@ -29,10 +33,10 @@ export default function HistoriasClinicasTable({
         );
     });
 
-    // Calcular total de páginas
+    // Calcular la cantidad total de páginas
     const totalPages = Math.ceil(historiasFiltradas.length / rowsPerPage);
 
-    // Obtener las historias de la página actual
+    // Determinar las historias clínicas a mostrar en la página actual
     const startIndex = (currentPage - 1) * rowsPerPage;
     const historiasPaginadas = historiasFiltradas.slice(startIndex, startIndex + rowsPerPage);
 
@@ -45,6 +49,7 @@ export default function HistoriasClinicasTable({
                         <th className="px-6 py-3 text-black">Paciente</th>
                         <th className="px-6 py-3 text-black">Fecha de Última Actualización</th>
                         <th className="px-6 py-3 text-black">Notas Médicas</th>
+                        <th className="px-6 py-3 text-black text-center">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -55,11 +60,29 @@ export default function HistoriasClinicasTable({
                                 <td className="px-6 py-4">{historia.paciente.nombre} {historia.paciente.apellido}</td>
                                 <td className="px-6 py-4">{historia.fechaUltimaActualizacion}</td>
                                 <td className="px-6 py-4">{historia.notasMedicas}</td>
+                                <td className="px-6 py-4 text-center">
+                                    {historia.tratamientos.length > 0 ? (
+                                        <button
+                                            className="px-6 py-2 w-30 bg-yellow-400 text-white rounded-lg hover:bg-yellow-500"
+                                            onClick={() => onEditarTratamiento(historia.idHistoria, historia.tratamientos[0].idTratamiento)}
+                                        >
+                                            Editar Tratamiento
+                                        </button>
+                                    ) : (
+                                        <button
+                                            className="px-6 py-2 w-30 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                                            onClick={() => onAgregarTratamiento(historia.idHistoria)}
+                                        >
+                                            Agregar Tratamiento
+                                        </button>
+                                    )}
+                                </td>
+
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan={4} className="px-6 py-4 text-center text-gray-500">
+                            <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
                                 No hay historias clínicas registradas.
                             </td>
                         </tr>

@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import MedicoLayout from "../../components/layout/MedicoLayout";
 import HistoriasClinicasTable from "../../components/tables/HistoriasClinicasTable";
 import NuevoHistoriaClinicaModal from "../../components/ui/NuevoHistoriaClinicaModal";
+import NuevoTratamientoModal from "../../components/ui/NuevoTratamientoModal";
+import EditarTratamientoModal from "../../components/ui/EditarTratamientoModal"; // Importamos el modal de edición
 import { obtenerHistoriasClinicas } from "../../services/historiasClinicasService";
 import { HistoriaClinica } from "../../types/historiaClinica";
 
@@ -16,7 +18,13 @@ export default function GestionHistoriasClinicasPage() {
     const rowsPerPage = 5;
 
     const [isNewHistoriaModalOpen, setIsNewHistoriaModalOpen] = useState(false);
+    const [isNewTratamientoModalOpen, setIsNewTratamientoModalOpen] = useState(false);
+    const [isEditTratamientoModalOpen, setIsEditTratamientoModalOpen] = useState(false);
+    
+    const [selectedHistoriaClinica, setSelectedHistoriaClinica] = useState<number | null>(null);
+    const [selectedTratamiento, setSelectedTratamiento] = useState<number | null>(null);
 
+    
     useEffect(() => {
         fetchHistoriasClinicas();
     }, []);
@@ -36,6 +44,28 @@ export default function GestionHistoriasClinicasPage() {
 
     function handleCloseNewHistoriaModal() {
         setIsNewHistoriaModalOpen(false);
+    }
+
+    function handleOpenNuevoTratamientoModal(idHistoria: number) {
+        setSelectedHistoriaClinica(idHistoria);
+        setIsNewTratamientoModalOpen(true);
+    }
+
+    function handleCloseNuevoTratamientoModal() {
+        setIsNewTratamientoModalOpen(false);
+        setSelectedHistoriaClinica(null);
+    }
+
+    function handleOpenEditarTratamientoModal(idHistoria: number, idTratamiento: number) {
+        setSelectedHistoriaClinica(idHistoria);
+        setSelectedTratamiento(idTratamiento);
+        setIsEditTratamientoModalOpen(true);
+    }
+
+    function handleCloseEditarTratamientoModal() {
+        setIsEditTratamientoModalOpen(false);
+        setSelectedHistoriaClinica(null);
+        setSelectedTratamiento(null);
     }
 
     function clearFilters() {
@@ -109,13 +139,29 @@ export default function GestionHistoriasClinicasPage() {
                 currentPage={currentPage}
                 rowsPerPage={rowsPerPage}
                 onPageChange={handlePageChange}
+                onAgregarTratamiento={handleOpenNuevoTratamientoModal}
+                onEditarTratamiento={handleOpenEditarTratamientoModal}
             />
 
-            {/* Modal para agregar historia clínica */}
+            {/* Modales */}
             <NuevoHistoriaClinicaModal
                 isOpen={isNewHistoriaModalOpen}
                 onClose={handleCloseNewHistoriaModal}
                 onHistoriaCreated={fetchHistoriasClinicas}
+            />
+
+            <NuevoTratamientoModal
+                isOpen={isNewTratamientoModalOpen}
+                onClose={handleCloseNuevoTratamientoModal}
+                idHistoriaClinica={selectedHistoriaClinica!}
+                onTratamientoCreated={fetchHistoriasClinicas}
+            />
+
+            <EditarTratamientoModal
+                isOpen={isEditTratamientoModalOpen}
+                onClose={handleCloseEditarTratamientoModal}
+                idTratamiento={selectedTratamiento!}
+                onTratamientoUpdated={fetchHistoriasClinicas}
             />
         </MedicoLayout>
     );
